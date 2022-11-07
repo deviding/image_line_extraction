@@ -305,9 +305,13 @@ class ImageLineGui(QDialog):
             Args:
                 name (str)  : 保存名
         """
+        if name == "default":
+            QMessageBox.warning(self, "注意", "対象の設定値「 default 」は上書きできません。")
+            return
+
         if name in self.setting_data:
             # 既に設定値が存在する場合は上書き確認
-            ret = QMessageBox.warning(self, "注意", "対象の設定値「 " + name + "」 を上書きします。よろしいですか？", QMessageBox.Ok, QMessageBox.Cancel)
+            ret = QMessageBox.warning(self, "注意", "対象の設定値「 " + name + " 」を上書きします。よろしいですか？", QMessageBox.Ok, QMessageBox.Cancel)
             # 上書きキャンセルの場合は何もしない
             if ret == QMessageBox.Cancel:
                 return
@@ -349,12 +353,20 @@ class ImageLineGui(QDialog):
         """
         current_str = self.combobox.currentText()
 
+        if current_str == "":
+            QMessageBox.warning(self, "注意", "プルダウンで削除する設定値を選択してから削除ボタンを押下してください。")
+            return
+
+        if current_str == "default":
+            QMessageBox.warning(self, "注意", "対象の設定値「 default 」は削除できません。")
+            return
+
         setting_data = self.load_json_file(self.json_path)
         setting_name_list = [*setting_data] # キーのみをリストとして取得
 
         if current_str in setting_name_list:
             # キーが存在した場合はダイアログを表示
-            ret = QMessageBox.warning(self, "注意", "対象の設定値「 " + current_str + "」 を削除します。よろしいですか？", QMessageBox.Ok, QMessageBox.Cancel)
+            ret = QMessageBox.warning(self, "注意", "対象の設定値「 " + current_str + " 」を削除します。よろしいですか？", QMessageBox.Ok, QMessageBox.Cancel)
 
             if ret == QMessageBox.Ok:
                 # OKなら対象の設定値を削除して上書き保存
@@ -363,10 +375,10 @@ class ImageLineGui(QDialog):
                 # リストを再取得
                 self.combobox.setCurrentText("")
                 self.set_setting_list()
-                QMessageBox.information(self, "正常終了", "対象の設定値「 " + current_str + "」 を削除しました。")
+                QMessageBox.information(self, "正常終了", "対象の設定値「 " + current_str + " 」を削除しました。")
         else:
             # キーが存在しない場合は警告
-            QMessageBox.warning(self, "注意", "対象の設定値「 " + current_str + "」 が存在しないため削除できませんでした。")
+            QMessageBox.warning(self, "注意", "対象の設定値「 " + current_str + " 」が存在しないため削除できませんでした。")
 
 
     def create_spinbox(self, low, high, value):
@@ -468,14 +480,21 @@ class ImageLineGui(QDialog):
         """ ファイル選択ダイアログを表示させる関数
 
             Args:
-                line_edit (QLineEdit): jsonファイルパス
+                line_edit (QLineEdit): 画像ファイルパスのQLineEdit
                 title (str) : ダイアログタイトル
                 filter (str): jsonファイルパス
 
             Returns:
                 True/False (bool): ファイルが選択されたかどうか
         """
-        fileObj = QFileDialog.getOpenFileName(self, title, self.my_dir_path, filter)
+        # 画像ファイルを開いていたらそのフォルダを表示させる
+        path = line_edit.text()
+        if path == "":
+            path = self.my_dir_path
+        else:
+            path = os.path.split(path)[0]
+
+        fileObj = QFileDialog.getOpenFileName(self, title, path, filter)
         filepath = fileObj[0]
 
         if (filepath is not None) and (filepath != ""):
@@ -569,7 +588,14 @@ class ImageLineGui(QDialog):
     def save_img_dialog(self):
         """ 画像保存ダイアログを表示させて画像を保存する関数
         """
-        file_path, _ = QFileDialog.getSaveFileName(self, "画像保存", self.my_dir_path + self.SAVE_FILE_DEFAULT, "PNG形式 (*.png)")
+        # 画像ファイルを開いていたらそのフォルダを表示させる
+        path = self.img_path.text()
+        if path == "":
+            path = self.my_dir_path
+        else:
+            path = os.path.split(path)[0]
+
+        file_path, _ = QFileDialog.getSaveFileName(self, "画像保存", path + self.SAVE_FILE_DEFAULT, "PNG形式 (*.png)")
 
         if file_path != "":
             pil_img = Image.fromarray(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
@@ -581,6 +607,7 @@ class ImageLineGui(QDialog):
         """ 一括処理ダイアログを表示させる関数
         """
         # フォームを表示
+        self.batch_form.clear_pre_log()
         self.batch_form.set_setting_data(self.create_setting_data())
         self.batch_form.set_close_fnc(self.set_gui_enabled, self.pre_btn.isEnabled(), self.save_btn.isEnabled())
         self.set_gui_enabled(False, False, False)

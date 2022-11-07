@@ -62,6 +62,7 @@ class BatchGui(QDialog):
         super(BatchGui, self).__init__(parent)
 
         self.setting_data = None
+        self.my_dir_path  = os.path.abspath(os.path.dirname(sys.argv[0]))
 
         # Widgetsの設定(タイトル、固定横幅、固定縦幅)
         self.setWindowTitle(self.TITLE)
@@ -138,6 +139,13 @@ class BatchGui(QDialog):
         self.rp.finished.connect(self.show_result)
 
 
+    def clear_pre_log(self):
+        """ プレビューとログ部分をクリアする関数
+        """
+        self.img_label.clear()
+        self.text_list.removeRows(0, self.text_list.rowCount())
+
+
     def set_setting_data(self, setting_data=SettingData):
         """ 設定値のオブジェクトを設定する関数
 
@@ -172,7 +180,11 @@ class BatchGui(QDialog):
     def target_folder_dialog(self):
         """ 対象フォルダ選択ダイアログを表示する関数
         """
-        dir_path = QFileDialog.getExistingDirectory(self, "対象フォルダ選択", os.path.abspath(os.path.dirname(sys.argv[0])))
+        path = self.target_path.text()
+        if path == "":
+            path = self.my_dir_path
+
+        dir_path = QFileDialog.getExistingDirectory(self, "対象フォルダ選択", path)
 
         if dir_path:
             self.target_path.setText(dir_path)
@@ -181,7 +193,18 @@ class BatchGui(QDialog):
     def save_folder_dialog(self):
         """ 保存先フォルダ選択ダイアログを表示する関数
         """
-        dir_path = QFileDialog.getExistingDirectory(self, "保存先フォルダ選択", os.path.abspath(os.path.dirname(sys.argv[0])))
+        # すでに設定されているフォルダがあればそれを開く
+        path = self.my_dir_path
+
+        path_target = self.target_path.text()
+        path_save = self.save_path.text()
+
+        if not path_save == "":
+            path = path_save
+        elif not path_target == "":
+            path = path_target
+
+        dir_path = QFileDialog.getExistingDirectory(self, "保存先フォルダ選択", path)
 
         if dir_path:
             self.save_path.setText(dir_path)
