@@ -1,0 +1,21 @@
+{
+    "default" : {
+        "outline" : {
+            "low" : 70,
+            "high" : 110,
+            "rough" : 5,
+            "blur" : 5
+        },
+        "img_blur" : {
+            "blur" : 10
+        },
+        "contrast" : {
+            "low" : 50,
+            "high" : 230
+        },
+        "checkbox" : {
+            "line" : true,
+            "shadow" : true
+        }
+    }
+}

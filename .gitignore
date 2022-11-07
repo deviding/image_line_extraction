@@ -1,0 +1,5 @@
+.DS_Store
+main/__pycache__
+main/setting.json
+build
+dist
