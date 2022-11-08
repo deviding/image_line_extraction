@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['./main/main.py'],
+    ['./source/main.py'],
     pathex=[],
     binaries=[],
-    datas=[('./main/img/icon.ico', './img'), ('./main/img/no_image.png', './img'), ('./main/json/default.json', './json')],
+    datas=[('./source/img/icon.ico', './img'), ('./source/img/no_image.png', './img'), ('./source/json/default.json', './json')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['./main/img/icon.ico'],
+    icon=['./source/img/icon.ico'],
 )

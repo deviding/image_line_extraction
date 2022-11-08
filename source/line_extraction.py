@@ -81,7 +81,8 @@ class LineExtraction():
         gray_img = self.low_contrast(gray_img)
 
         if line_state and shadow_state:
-            # 両方にチェックがあった場合は7:輪郭線と影部分の画像を合成
+            # 両方にチェックがあった場合
+            # 7:輪郭線と影部分の画像を合成
             result_img = cv2.bitwise_and(outline_img, gray_img)
         elif line_state:
             # 線のみの場合は線だけ

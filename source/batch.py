@@ -13,7 +13,7 @@ from PySide6.QtGui import *
 
 
 class EmitObject():
-    """ Emitで渡すためのクラス
+    """ Emitで渡すオブジェクトクラス
     """
     def __init__(self, file_name=str, pre_img=QPixmap):
         """ コンストラクタ

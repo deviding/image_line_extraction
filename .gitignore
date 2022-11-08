@@ -1,5 +1,5 @@
 .DS_Store
-main/__pycache__
-main/setting.json
+source/__pycache__
+source/setting.json
 build
 dist

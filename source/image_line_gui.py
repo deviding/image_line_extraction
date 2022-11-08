@@ -318,13 +318,13 @@ class ImageLineGui(QDialog):
 
         # デフォルトのjsonファイルを読み込んで追加データを作成
         add_data = self.load_json_file(self.default_json_path)
-        add_data['default']['outline']['low']    = self.outline_low_sp.value()
-        add_data['default']['outline']['high']   = self.outline_high_sp.value()
-        add_data['default']['outline']['rough']  = self.outline_rough_sp.value()
+        add_data['default']['outline']['low']   = self.outline_low_sp.value()
+        add_data['default']['outline']['high']  = self.outline_high_sp.value()
+        add_data['default']['outline']['rough'] = self.outline_rough_sp.value()
         add_data['default']['outline']['blur']  = self.outline_blur_sp.value()
         add_data['default']['img_blur']['blur'] = self.blur_sp.value()
-        add_data['default']['contrast']['low']   = self.contrast_low_sp.value()
-        add_data['default']['contrast']['high']  = self.contrast_high_sp.value()
+        add_data['default']['contrast']['low']  = self.contrast_low_sp.value()
+        add_data['default']['contrast']['high'] = self.contrast_high_sp.value()
         # チェックボックスの設定
         if self.line_checkbox.checkState() == Qt.CheckState.Checked:
             add_data['default']['checkbox']['line'] = True
