@@ -265,23 +265,26 @@ class ImageLineGui(QDialog):
         if current_str == "":
             return
 
-        # 値を設定
-        self.outline_low_sp.setValue(self.setting_data[current_str]['outline']['low'])
-        self.outline_high_sp.setValue(self.setting_data[current_str]['outline']['high'])
-        self.outline_rough_sp.setValue(self.setting_data[current_str]['outline']['rough'])
-        self.outline_blur_sp.setValue(self.setting_data[current_str]['outline']['blur'])
-        self.blur_sp.setValue(self.setting_data[current_str]['img_blur']['blur'])
-        self.contrast_low_sp.setValue(self.setting_data[current_str]['contrast']['low'])
-        self.contrast_high_sp.setValue(self.setting_data[current_str]['contrast']['high'])
-        if self.setting_data[current_str]['checkbox']['line']:
-            self.line_checkbox.setCheckState(Qt.CheckState.Checked)
-        else:
-            self.line_checkbox.setCheckState(Qt.CheckState.Unchecked)
+        try:
+            # 値を設定
+            self.outline_low_sp.setValue(self.setting_data[current_str]['outline']['low'])
+            self.outline_high_sp.setValue(self.setting_data[current_str]['outline']['high'])
+            self.outline_rough_sp.setValue(self.setting_data[current_str]['outline']['rough'])
+            self.outline_blur_sp.setValue(self.setting_data[current_str]['outline']['blur'])
+            self.blur_sp.setValue(self.setting_data[current_str]['img_blur']['blur'])
+            self.contrast_low_sp.setValue(self.setting_data[current_str]['contrast']['low'])
+            self.contrast_high_sp.setValue(self.setting_data[current_str]['contrast']['high'])
+            if self.setting_data[current_str]['checkbox']['line']:
+                self.line_checkbox.setCheckState(Qt.CheckState.Checked)
+            else:
+                self.line_checkbox.setCheckState(Qt.CheckState.Unchecked)
 
-        if self.setting_data[current_str]['checkbox']['shadow']:
-            self.shadow_checkbox.setCheckState(Qt.CheckState.Checked)
-        else:
-            self.shadow_checkbox.setCheckState(Qt.CheckState.Unchecked)
+            if self.setting_data[current_str]['checkbox']['shadow']:
+                self.shadow_checkbox.setCheckState(Qt.CheckState.Checked)
+            else:
+                self.shadow_checkbox.setCheckState(Qt.CheckState.Unchecked)
+        except Exception as e:
+            QMessageBox.warning(self, "注意", "設定値「 " + current_str + " 」に不正値があります。")
 
 
     def show_save_dialog(self):
@@ -465,15 +468,18 @@ class ImageLineGui(QDialog):
         file_open_flg = self.filedialog_clicked(self.img_path, "画像ファイル選択", "Images (*.png *.bmp *.jpg)")
 
         if (file_open_flg):
-            # OpenCVだとパスに日本語が入っているとダメなのでnumpyで開く
-            img_org = np.array(Image.open(self.img_path.text()))
-            # RGBに変換する
-            cv2_img = cv2.cvtColor(img_org, cv2.COLOR_BGR2RGB)
-            # 読み込んだオリジナル画像をクラス変数に代入
-            self.img_org = copy.deepcopy(cv2_img)
-            # プレビューに表示できる形式にして表示
-            img = self.line_extraction.get_qpixmap(cv2_img, self.PREVIEW_WIDTH, self.PREVIEW_HEIGHT)
-            self.img_label.setPixmap(img)
+            try:
+                # OpenCVだとパスに日本語が入っているとダメなのでnumpyで開く
+                img_org = np.array(Image.open(self.img_path.text()))
+                # RGBに変換する
+                cv2_img = cv2.cvtColor(img_org, cv2.COLOR_BGR2RGB)
+                # 読み込んだオリジナル画像をクラス変数に代入
+                self.img_org = copy.deepcopy(cv2_img)
+                # プレビューに表示できる形式にして表示
+                img = self.line_extraction.get_qpixmap(cv2_img, self.PREVIEW_WIDTH, self.PREVIEW_HEIGHT)
+                self.img_label.setPixmap(img)
+            except Exception as e:
+                QMessageBox.warning(self, "注意", "画像読込でエラーが発生しました。\n\n" + str(e))
 
 
     def filedialog_clicked(self, line_edit, title, filter):
@@ -482,7 +488,7 @@ class ImageLineGui(QDialog):
             Args:
                 line_edit (QLineEdit): 画像ファイルパスのQLineEdit
                 title (str) : ダイアログタイトル
-                filter (str): jsonファイルパス
+                filter (str): フィルタ文字列
 
             Returns:
                 True/False (bool): ファイルが選択されたかどうか
@@ -598,9 +604,12 @@ class ImageLineGui(QDialog):
         file_path, _ = QFileDialog.getSaveFileName(self, "画像保存", path + self.SAVE_FILE_DEFAULT, "PNG形式 (*.png)")
 
         if file_path != "":
-            pil_img = Image.fromarray(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
-            pil_img.save(file_path)
-            QMessageBox.information(self, "正常終了", file_path + " に画像を保存しました。")
+            try:
+                pil_img = Image.fromarray(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
+                pil_img.save(file_path)
+                QMessageBox.information(self, "正常終了", file_path + " に画像を保存しました。")
+            except Exception as e:
+                QMessageBox.warning(self, "注意", "画像保存でエラーが発生しました。\n\n" + str(e))
 
 
     def batch_dialog(self):

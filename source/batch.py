@@ -361,7 +361,6 @@ class RunProcess(QThread):
 
                 # 画像ファイルの場合は変換して保存
                 if (extension == ".png") or (extension == ".jpg") or (extension == ".jpeg") or (extension == ".bmp"):
-                    print(img_file)
                     # OpenCVだとパスに日本語が入っているとダメなのでnumpyで開く
                     img_org = np.array(Image.open(img_file))
                     # OpenCVのRGBに変換
@@ -378,5 +377,4 @@ class RunProcess(QThread):
                     # オブジェクトを作成して渡す
                     self.process_thread.emit(EmitObject(save_file_name, pre_img))
         except Exception as e:
-            print(e)
             self.error = str(e)
