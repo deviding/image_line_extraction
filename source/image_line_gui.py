@@ -168,6 +168,7 @@ class ImageLineGui(QDialog):
         img = self.line_extraction.get_qpixmap(cv2_img, self.PREVIEW_WIDTH, self.PREVIEW_HEIGHT)
         img_layout = QHBoxLayout()
         self.img_label = QLabel()
+        self.img_label.setFixedSize(self.PREVIEW_WIDTH, self.PREVIEW_HEIGHT)
         self.img_label.setAlignment(Qt.AlignmentFlag.AlignCenter) # 画像を中央に表示
         self.img_label.setPixmap(img)
         self.img_label.setFrameStyle(QFrame.Box)
@@ -465,7 +466,7 @@ class ImageLineGui(QDialog):
     def img_dialog(self):
         """ 画像選択ダイアログを表示する関数
         """
-        file_open_flg = self.filedialog_clicked(self.img_path, "画像ファイル選択", "Images (*.png *.bmp *.jpg)")
+        file_open_flg = self.filedialog_clicked(self.img_path, "画像ファイル選択", "Images(*.png *.bmp *.jpg *.jpeg)")
 
         if (file_open_flg):
             try:

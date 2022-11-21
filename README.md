@@ -22,3 +22,11 @@ image_line_extractionディレクトリの階層に移動し、以下のコマ�
 ```shell
 pyinstaller lineExtraction.spec
 ```
+
+## ソース実行コマンド
+
+sourceディレクトリの階層に移動し、以下のコマンドを実行。
+
+```shell
+python main.py
+```

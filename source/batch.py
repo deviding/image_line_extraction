@@ -216,6 +216,15 @@ class BatchGui(QDialog):
         target_path = self.target_path.text()
         save_path   = self.save_path.text()
 
+        # フォルダ設定チェック
+        if target_path == "":
+            QMessageBox.warning(self, "注意", "変換フォルダが設定されていません。")
+            return
+
+        if save_path == "":
+            QMessageBox.warning(self, "注意", "保存フォルダが設定されていません。")
+            return
+
         # フォルダパスチェック
         if not os.path.exists(target_path):
             QMessageBox.warning(self, "注意", target_path + " フォルダが存在しません。存在するフォルダを選択してください。")
@@ -350,7 +359,7 @@ class RunProcess(QThread):
         """ 書き込み処理を実行する関数
         """
         self.error = None
-
+        target_img_flg = False
         line_extraction = LineExtraction() # 画像変換用オブジェクト
 
         try:
@@ -376,5 +385,9 @@ class RunProcess(QThread):
                     pre_img = line_extraction.get_qpixmap(result_img, self.width, self.height)
                     # オブジェクトを作成して渡す
                     self.process_thread.emit(EmitObject(save_file_name, pre_img))
+                    target_img_flg = True
         except Exception as e:
             self.error = str(e)
+
+        if not target_img_flg:
+            self.error = "変換対象の画像がありません。"
